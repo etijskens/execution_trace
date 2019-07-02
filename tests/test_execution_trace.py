@@ -5,13 +5,10 @@
 
 import os
 import sys
-import pytest
+# import pytest
 
-from click.testing import CliRunner
 from click import echo
 
-from execution_trace import execution_trace
-from execution_trace import __version__
 
 # Make sure that the current directory is the project directory.
 # 'make test" and 'pytest' are generally run from the project directory.
@@ -19,7 +16,7 @@ from execution_trace import __version__
 if os.getcwd().endswith('tests'):
     echo(f"Changing current working directory"
          f"\n  from '{os.getcwd()}'"
-         f"\n  to   '{os.path.abspath(os.path.join(os.getcwd(),'..'))}'.\n")
+         f"\n  to   '{os.path.abspath(os.path.join(os.getcwd(),'..'))}'\n")
     os.chdir('..')
 # Make sure that we can import the module being tested. When running
 # 'make test" and 'pytest' in the project directory, the current working
@@ -28,43 +25,34 @@ if not ('.' in sys.path or os.getcwd() in sys.path):
     echo(f"Adding '.' to sys.path.\n")
     sys.path.insert(0, '.')
 
+from execution_trace import trace,print2stderr
+from execution_trace import __version__
 # ==============================================================================
-@pytest.fixture
-def response():
-    """Sample pytest fixture.
-
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
-# ==============================================================================
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
-    # from bs4 import BeautifulSoup
-    # assert 'GitHub' in BeautifulSoup(response.content).title.string
+def test_trace():
+    import logging
+    log = logging.getLogger('main')
+    log.addHandler(logging.StreamHandler(sys.stderr))
+    log.setLevel(logging.INFO)
+    with trace('executing __main__','finished.',log=log):
+        with trace('something',singleline=False):
+            # we must print to the same stream, otherwise the printed lines 
+            # are not in the right order
+            print2stderr('hello')
+            print('world')
+        with trace('something else'):
+            # we must print to the same stream, otherwise the printed lines 
+            # are not in the right order
+            print2stderr('hello ...',end='')
 # ==============================================================================
 def test_version():
     assert __version__=="0.0.0"
 # ==============================================================================
-# def test_command_line_interface():
-#     """Test the CLI."""
-#     runner = CliRunner()
-#     result = runner.invoke(cli.main)
-#     assert result.exit_code == 0
-#     assert 'execution_trace.cli.main' in result.output
-#     help_result = runner.invoke(cli.main, ['--help'])
-#     assert help_result.exit_code == 0
-#     assert '--help  Show this message and exit.' in help_result.output
 
 # ==============================================================================
 # The code below is for debugging a particular test in eclipse/pydev.
 # (normally all tests are run with pytest)
 # ==============================================================================
 if __name__ == "__main__":
-    the_test_you_want_to_debug = test_version
-
-    from execution_trace import trace
-    with trace(f"__main__ running {the_test_you_want_to_debug}",
-               '-*# finished #*-', singleline=False, combine=False):
-        the_test_you_want_to_debug()
+    the_test_you_want_to_debug = test_trace
+    the_test_you_want_to_debug()
 # ==============================================================================
