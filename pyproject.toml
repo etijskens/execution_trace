@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "execution_trace"
-version = "0.0.0"
-description = "begin/end message on tasks"
+version = "1.0.0"
+description = "A context manager for begin/end messages around tasks."
 authors = ["Engelbert Tijskens <engelbert.tijskens@uantwerpen.be>"]
 license = "MIT"
 
@@ -15,7 +15,6 @@ keywords = ['packaging', 'poetry']
 [tool.poetry.dependencies]
 python = "^3.7"
 click = "^7.0"
-cookiecutter = "^1.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.4.2"

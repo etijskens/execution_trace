@@ -25,12 +25,12 @@ def trace(begin_msg='doing',end_msg='done.',log=None,singleline=True, combine=Tr
     """
     Generate an execution trace by printing a message before and after
     a code fragment executes.
-    
+
     :param str begin_msg: print this before body is executed
     :param str end_msg: print this after body is executed
     :param log: if None, generates the execution trace on stderr, otherwise on
         a logger object (from the logging module)
-    :param singleline: generates a single line execution trace as in 
+    :param singleline: generates a single line execution trace as in
         `<begin_msg> ... <end_msg>`. Calling print2stderr may obfuscate this.
     :param combine: if True the after message recapitulates the begin message.
         This parameter is ignored when singleline is True.
@@ -62,17 +62,17 @@ if __name__=="__main__":
     log.setLevel(logging.INFO)
     with trace('executing __main__','finished.',log=log):
         with trace('something',singleline=False):
-            # we must print to the same stream, otherwise the printed lines 
+            # we must print to the same stream, otherwise the printed lines
             # are not in the right order
             print2stderr('hello')
             print('world')
         with trace('something',singleline=False,combine=False):
-            # we must print to the same stream, otherwise the printed lines 
+            # we must print to the same stream, otherwise the printed lines
             # are not in the right order
             print2stderr('hello')
             print('world')
         with trace('something else'):
-            # we must print to the same stream, otherwise the printed lines 
+            # we must print to the same stream, otherwise the printed lines
             # are not in the right order
             print2stderr('hello ...',end='')
 #===============================================================================
